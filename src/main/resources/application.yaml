@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: inventory
+  datasource:
+    url: jdbc:mysql://localhost:3306/inventory?createDatabaseIfNotExist=true
+    username: root
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    open-in-view: false
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: inventory-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: INFO
+
+security:
+  jwt:
+    secret: "bREzz?6gPr6ogH4!@M$#SJB$$tjpSYmnKHm&!9PL"
+    expiration: 3600000
+
+inventory:
+  kafka:
+    topics:
+      inventory-events: inventory.events
+      audit: inventory.audit
+      bulk-upload: inventory.bulk.upload
