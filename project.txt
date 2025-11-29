@@ -1,0 +1,90 @@
+Project Title: Inventory Management System
+Project Description:
+Project Scope: You are tasked with building a web-based Inventory Management System using Spring Boot (Java) . This system will track and manage inventory for an e-commerce platform. The project will encompass the following key features:
+1.
+Database Management:
+-
+Design and create a relational database schema to store product information, user data, and transaction history.
+-
+Implement proper indexing and optimise database queries for efficient data retrieval.
+-
+You can use MySQL or PostgreSQL for the database but feel free to use any other relational database of your choice and justify your choice.
+2.
+Transaction Handling:
+-
+Develop transactional logic to ensure data consistency during various inventory-related operations.
+3.
+Message Queueing:
+-
+Set up Apache Kafka and create topics for managing any asynchronous messages.
+-
+Provide real-time inventory tracking of all the products using Kafka.
+-
+Further, any API call made to all the endpoints should be logged in Kafka so that we can maintain an audit trail.
+4.
+CRUD Operations:
+-
+Create APIs for CRUD (Create, Read, Update, Delete) operations for managing products and users.
+-
+Implement appropriate validation and error handling for all the APIs.
+-
+Provide APIs for searching and filtering products based on various attributes.
+-
+All delete operations should be soft deletes i.e. the data should not be deleted from the database but should be marked as deleted.
+-
+Provide a bulk-upload capability which allows a user to upload a CSV file containing a list of products to be added to the inventory. The CSV file should contain the following fields: name, description, price, quantity, category, and tags. This operation should be asynchronous and should be handled using Kafka.
+5.
+Security:
+-
+Implement security best practices to protect sensitive data.
+-
+Use encryption for sensitive data at rest and in transit. For example, encrypt the user passwords before storing them in the database. You can use any encryption algorithm of your choice.
+6.
+Authentication and Authorization:
+-
+Implement JWT-based authentication and authorisation to secure API endpoints. For example, only authenticated users should be able to access the APIs for managing products and users.
+-
+Differentiate between super-admin and regular user roles with varying access levels using the claims. For example, only the super admin should be able to create and delete users.
+-
+Provide appropriate endpoints accessible only to the super admin for blacklisting users and view the audit trail.
+Bonus Components
+Please note that the features provided in this section are not mandatory but will earn you additional points.
+1.
+Dockerise your application
+Containerise your application using docker and employ docker-compose to run the various containers for each service.
+
+2.
+Unit and Integration Tests
+Write appropriate unit and integration tests for your API. Integrate testing coverage reporting as well.
+3.
+Documentation
+Using open API spec version 3.0.3, provide a valid spec document.
+Deliverables:
+-
+Fully functional web-based Inventory Management System.
+-
+A link to a version control tool e.g., GitHub, GitLab, containing the source code. Include a README file summarizing the design decisions, challenges faced, and solutions implemented.
+Evaluation Criteria:
+Your project will be evaluated based on the following criteria:
+●
+Functionality: Does the system meet the specified requirements and perform CRUD operations accurately?
+●
+Database design and optimization.
+●
+Transaction handling and data consistency.
+●
+Effective use of Apache Kafka for message queueing.
+●
+Proper implementation of security measures, including JWT-based authentication and authorization.
+●
+Code quality, maintainability, and documentation.
+●
+Efficient use of data structures.
+●
+Adherence to best practices and industry standards.
+Note: You must use industry-standard development practices, including version control & testing.
+
+ Please refer to the following documentation for more information on the project's various components. Ensure you read through the recommended best practices. You are free to use any other resources as well.
+Spring
+JWT Site
+Kafka

@@ -1,0 +1,266 @@
+{
+  "info": {
+    "name": "Inventory Management API",
+    "description": "Postman collection for the Inventory Management System (Spring Boot, JWT).\n\nHow to use:\n1. Start the application (default port 8080).\n2. (Optional) Bootstrap a SUPER_ADMIN using the Bootstrap request.\n3. Call Auth → Login with valid credentials. The collection test will store the JWT into a collection variable {{token}}.\n4. Use other requests; they will send Authorization: Bearer {{token}} automatically.\n\nNote: Some endpoints (under Users) require SUPER_ADMIN role.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "token", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{token}}", "type": "string" }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Bootstrap SUPER_ADMIN",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/bootstrap-super-admin?username={{adminUsername}}&password={{adminPassword}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "bootstrap-super-admin"],
+              "query": [
+                { "key": "username", "value": "{{adminUsername}}" },
+                { "key": "password", "value": "{{adminPassword}}" }
+              ]
+            }
+          },
+          "response": [],
+          "variable": [
+            { "key": "adminUsername", "value": "admin" },
+            { "key": "adminPassword", "value": "admin123" }
+          ]
+        },
+        {
+          "name": "Login (sets {{token}})",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "try {",
+                  "  var json = pm.response.json();",
+                  "  if (json && json.token) {",
+                  "    pm.collectionVariables.set('token', json.token);",
+                  "    console.log('JWT token set to collection variable');",
+                  "  }",
+                  "} catch (e) { console.warn('No JSON token in response'); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/products?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/products/search?q=phone&page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "search"],
+              "query": [
+                { "key": "q", "value": "phone" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "{{productId}}"]
+            }
+          },
+          "variable": [ { "key": "productId", "value": "1" } ]
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sample Phone\",\n  \"description\": \"A great phone\",\n  \"price\": 499.99,\n  \"quantity\": 100,\n  \"category\": \"ELECTRONICS\",\n  \"tags\": \"smartphone,android\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "{{productId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Phone\",\n  \"description\": \"Updated description\",\n  \"price\": 459.99,\n  \"quantity\": 120,\n  \"category\": \"ELECTRONICS\",\n  \"tags\": \"smartphone,updated\"\n}"
+            }
+          },
+          "variable": [ { "key": "productId", "value": "1" } ]
+        },
+        {
+          "name": "Delete (Soft) Product",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "{{productId}}"]
+            }
+          },
+          "variable": [ { "key": "productId", "value": "1" } ]
+        },
+        {
+          "name": "Adjust Quantity",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/products/{{productId}}/adjust?delta=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "{{productId}}", "adjust"],
+              "query": [ { "key": "delta", "value": "5" } ]
+            }
+          },
+          "variable": [ { "key": "productId", "value": "1" } ]
+        },
+        {
+          "name": "Bulk Upload (CSV)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": [] }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/bulk-upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "bulk-upload"]
+            },
+            "description": "Upload a CSV file with columns: name,description,price,quantity,category,tags"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users (SUPER_ADMIN)",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"john\",\n  \"email\": \"john@example.com\",\n  \"password\": \"P@ssw0rd\",\n  \"role\": \"USER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Blacklist User",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}/blacklist?value=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userId}}", "blacklist"],
+              "query": [ { "key": "value", "value": "true" } ]
+            }
+          },
+          "variable": [ { "key": "userId", "value": "1" } ]
+        },
+        {
+          "name": "Unblacklist User",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}/blacklist?value=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userId}}", "blacklist"],
+              "query": [ { "key": "value", "value": "false" } ]
+            }
+          },
+          "variable": [ { "key": "userId", "value": "1" } ]
+        },
+        {
+          "name": "Soft Delete User",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userId}}"]
+            }
+          },
+          "variable": [ { "key": "userId", "value": "1" } ]
+        }
+      ]
+    }
+  ]
+}

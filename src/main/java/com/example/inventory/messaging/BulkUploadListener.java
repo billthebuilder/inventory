@@ -2,6 +2,8 @@ package com.example.inventory.messaging;
 
 import com.example.inventory.model.Product;
 import com.example.inventory.repository.ProductRepository;
+import com.example.inventory.util.LogUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 
 @Component
+@Slf4j
 public class BulkUploadListener {
     private final ProductRepository productRepository;
     private final PublisherService publisherService;
@@ -20,7 +23,6 @@ public class BulkUploadListener {
 
     // CSV fields: name,description,price,quantity,category,tags
     @KafkaListener(topics = "${inventory.kafka.topics.bulk-upload}")
-    @Transactional
     public void onCsvLine(String line) {
         try {
             String[] parts = line.split(",", -1);
@@ -35,6 +37,7 @@ public class BulkUploadListener {
             Product saved = productRepository.save(p);
             publisherService.publishInventoryEvent(new InventoryEvent("PRODUCT_BULK_CREATED", String.valueOf(saved.getId())));
         } catch (Exception e) {
+            LogUtil.logException(log,e);
             publisherService.publishAudit("Bulk upload line failed: " + e.getMessage());
         }
     }
