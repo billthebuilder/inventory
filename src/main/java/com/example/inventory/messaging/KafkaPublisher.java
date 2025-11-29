@@ -9,17 +9,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class KafkaPublisher implements PublisherService {
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     private final String inventoryTopic;
     private final String auditTopic;
     private final String bulkTopic;
 
     public KafkaPublisher(KafkaTemplate<String, String> kafkaTemplate,
+                          ObjectMapper objectMapper,
                           @Value("${inventory.kafka.topics.inventory-events}") String inventoryTopic,
                           @Value("${inventory.kafka.topics.audit}") String auditTopic,
                           @Value("${inventory.kafka.topics.bulk-upload}") String bulkTopic) {
         this.kafkaTemplate = kafkaTemplate;
+        this.objectMapper = objectMapper;
         this.inventoryTopic = inventoryTopic;
         this.auditTopic = auditTopic;
         this.bulkTopic = bulkTopic;

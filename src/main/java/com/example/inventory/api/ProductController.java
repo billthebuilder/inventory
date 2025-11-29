@@ -76,7 +76,12 @@ public class ProductController {
     public ResponseEntity<String> bulkUpload(@RequestParam("file") MultipartFile file) {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String line;
+            boolean isFirstLine = true;
             while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue; // Skip the CSV header
+                }
                 if (line.trim().isEmpty()) continue;
                 publisherService.publishBulkUploadLine(line);
             }
